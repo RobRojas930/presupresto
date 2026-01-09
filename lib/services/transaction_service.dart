@@ -29,7 +29,9 @@ class TransactionService {
         List<Transaction> transactions = [];
         jsonDataList.forEach(
           (item) {
-            transactions.add(Transaction.fromJson(item));
+            final Map<String, dynamic> itemJsonData = item;
+            itemJsonData['category'] = itemJsonData['category'][0];
+            transactions.add(Transaction.fromJson(itemJsonData));
           },
         );
         return transactions;
@@ -51,13 +53,37 @@ class TransactionService {
           'Content-Type': 'application/json',
           'authorization': '$token'
         },
-        body: jsonEncode(data),
+        body: jsonEncode(data['transaction']),
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        final Map<String, dynamic> data = jsonData['data'];
+        data['category'] = data['category'][0];
+        return Transaction.fromJson(data);
       } else {
         throw Exception('Failed to create transaction');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<Transaction> updateTransaction(Map<String, Transaction> data) async {
+    try {
+      final token = await _storage.read(key: 'token');
+      final response = await http.put(
+        Uri.parse('$baseUrl/transaction/${data['transaction']!.id}'),
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': '$token'
+        },
+        body: jsonEncode(data),
+      );
+      if (response.statusCode == 200) {
+        return Transaction.fromJson(jsonDecode(response.body)['data']);
+      } else {
+        throw Exception('Failed to update transaction');
       }
     } catch (e) {
       throw Exception('Error: $e');

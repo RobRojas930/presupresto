@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:presupresto/blocs/Category/category_bloc.dart';
 import 'package:presupresto/blocs/Category/category_state.dart';
@@ -25,6 +26,10 @@ class TransactionModalCreateWidgetState
   DateTime selectedDate = DateTime.now();
   String? selectedCategory;
 
+  MaterialColor selectedColor = Colors.grey;
+  String selectedColorCode = '#9E9E9E';
+  String? selectedIcon;
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +41,7 @@ class TransactionModalCreateWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    var alertDialog = AlertDialog(
       title: const Text('Nueva Transacción'),
       content: SingleChildScrollView(
         child: Column(
@@ -51,6 +56,7 @@ class TransactionModalCreateWidgetState
                 controller: amountController,
                 decoration: const InputDecoration(labelText: 'Monto'),
                 keyboardType: TextInputType.number),
+            SizedBox(height: 20),
             _dropDownCategories(),
             TextButton(
               onPressed: () async {
@@ -91,19 +97,47 @@ class TransactionModalCreateWidgetState
         ),
       ],
     );
+    return alertDialog;
   }
 
   BlocBuilder<CategoryBloc, CategoryState> _dropDownCategories() {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         if (state is CategoryLoaded) {
+          widget.categories = state.items;
           return DropdownButton<String>(
             value: selectedCategory!.isEmpty ? null : selectedCategory,
             hint: const Text('Selecciona una categoría'),
             items: state.items.map((Category category) {
               return DropdownMenuItem<String>(
                 value: category.id.toString(),
-                child: Text(category.name),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: Color(int.parse(
+                                category.color!.replaceAll('#', '0xFF'))),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: FaIcon(
+                              FontAwesomeIcons
+                                  .solidCircle, // Placeholder for icon
+                              color: Colors.white,
+                              size: 12,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(category.name),
+                      ],
+                    ),
+                  ],
+                ),
               );
             }).toList(),
             onChanged: (String? newValue) {

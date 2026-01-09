@@ -16,7 +16,7 @@ class TransactionRepository {
   }
 
   Future<Transaction> update(Transaction tx, {String? tokenOverride}) async {
-    return _service.createTransaction({'transaction': tx});
+    return _service.updateTransaction({'transaction': tx});
   }
 
   Future<void> delete(String id, {String? tokenOverride}) async {

@@ -31,11 +31,12 @@ class TransactionCardWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Color(int.parse(
+                    transaction.category.color!.replaceAll('#', '0xFF'))),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                transaction.category.id,
+                transaction.category.name,
                 style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
             ),

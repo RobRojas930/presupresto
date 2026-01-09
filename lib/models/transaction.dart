@@ -34,11 +34,16 @@ class Transaction {
 
   // Create from JSON
   factory Transaction.fromJson(Map<String, dynamic> json) {
+    final amount = json['amount'] is int
+        ? (json['amount'] as int).toDouble()
+        : json['amount'] is String
+            ? 0.0
+            : json['amount'] as double;
     return Transaction(
       id: json['_id'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
-      amount: json['amount'] as double,
+      amount: amount,
       date: DateTime.parse(json['date'] as String),
       type: json['type'] as String,
       category: Category.fromJson(json['category'] as Map<String, dynamic>),
