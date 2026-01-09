@@ -11,17 +11,16 @@ import 'package:presupresto/ui/pages/home_view.dart';
 import 'package:presupresto/ui/pages/login_view.dart';
 import 'package:presupresto/ui/pages/signup_view.dart';
 import 'package:presupresto/ui/pages/start_view.dart';
-import 'package:presupresto/ui/pages/transaction_view.dart';
+import 'package:presupresto/ui/pages/transactions/transaction_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:presupresto/utils/constants.dart';
 
 import 'routes/app_routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final remoteUrl = 'https://api-express-holy-cloud-5609.fly.dev/api/v1';
-  final localUrl = 'http://10.0.2.2:3000/api/v1';
-  final baseUrl = localUrl;
-  final authService = AuthService(baseUrl: baseUrl);
+
+  final authService = AuthService(baseUrl: AppConstants.baseUrl);
   final authRepo = AuthRepository(authService);
 
   runApp(

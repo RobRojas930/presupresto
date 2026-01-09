@@ -27,12 +27,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onLoginRequested(LoginRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onLoginRequested(
+      LoginRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
       final data = await repository.login(event.email, event.password);
       final token = data['token'] as String?;
-      final user = repository.parseUser(data);
+      final user = repository.parseUser(data['data']);
       if (token == null) throw Exception('Token no recibido');
       await _storage.write(key: 'token', value: token);
       emit(AuthAuthenticated(token: token, user: user));
@@ -42,10 +43,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onSignupRequested(SignupRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onSignupRequested(
+      SignupRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final data = await repository.signup(event.name, event.email, event.password);
+      final data =
+          await repository.signup(event.name, event.email, event.password);
       final token = data['token'] as String?;
       final user = repository.parseUser(data);
       if (token == null) throw Exception('Token no recibido');
@@ -57,7 +60,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onLogoutRequested(LogoutRequested _, Emitter<AuthState> emit) async {
+  Future<void> _onLogoutRequested(
+      LogoutRequested _, Emitter<AuthState> emit) async {
     await _storage.delete(key: 'token');
     emit(AuthUnauthenticated());
   }

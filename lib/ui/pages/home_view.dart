@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:presupresto/ui/pages/budget_view.dart';
 import 'package:presupresto/ui/pages/dashboard_view.dart';
 import 'package:presupresto/ui/pages/history_view.dart';
-import 'package:presupresto/ui/pages/transaction_view.dart';
+import 'package:presupresto/ui/pages/transactions/transaction_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
