@@ -9,6 +9,7 @@ import 'package:presupresto/ui/pages/dashboard_view.dart';
 import 'package:presupresto/ui/pages/history_view.dart';
 import 'package:presupresto/ui/pages/home_view.dart';
 import 'package:presupresto/ui/pages/login_view.dart';
+import 'package:presupresto/ui/pages/profile_view.dart';
 import 'package:presupresto/ui/pages/signup_view.dart';
 import 'package:presupresto/ui/pages/start_view.dart';
 import 'package:presupresto/ui/pages/transactions/transaction_view.dart';
@@ -55,10 +56,11 @@ class MyApp extends StatelessWidget {
       initialRoute: AppRoutes.start,
       routes: {
         '/': (context) => const HomeView(),
+        AppRoutes.profile: (context) => const ProfileView(),
         AppRoutes.start: (context) => const StartView(),
         AppRoutes.home: (context) => const HomeView(),
         AppRoutes.dashboard: (context) => const DashboardView(),
-        AppRoutes.transacciones: (context) => const TransactionView(),
+        AppRoutes.transacciones: (context) => TransactionView(),
         AppRoutes.presupuestos: (context) => const BudgetView(),
         AppRoutes.historico: (context) => const HistoryView(),
         AppRoutes.login: (context) =>

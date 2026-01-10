@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presupresto/blocs/Category/category_bloc.dart';
@@ -10,6 +13,7 @@ import 'package:presupresto/blocs/Transaction/transaction_event.dart';
 import 'package:presupresto/blocs/Transaction/transaction_state.dart';
 import 'package:presupresto/models/transaction.dart';
 import 'package:presupresto/models/category.dart';
+import 'package:presupresto/models/user.dart';
 import 'package:presupresto/repositories/category_repository.dart';
 import 'package:presupresto/repositories/transaction_repository.dart';
 import 'package:presupresto/services/category_service.dart';
@@ -18,8 +22,69 @@ import 'package:presupresto/ui/pages/transactions/widgets/transaction_card_widge
 import 'package:presupresto/ui/pages/transactions/widgets/transaction_modal_create_widget.dart';
 import 'package:presupresto/utils/constants.dart';
 
-class TransactionView extends StatelessWidget {
-  const TransactionView({super.key});
+// ignore: must_be_immutable
+class TransactionView extends StatefulWidget {
+  List<Transaction> transactions = [];
+  TransactionView({super.key});
+
+  @override
+  State<TransactionView> createState() => _TransactionViewState();
+}
+
+class _TransactionViewState extends State<TransactionView> {
+  DateTime selectedDate = DateTime.now();
+  TextEditingController searchController = TextEditingController();
+  TransactionService transactionService =
+      TransactionService(baseUrl: AppConstants.baseUrl);
+  User? currentUser;
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  String? selectedTitleTransaction = '';
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+
+  void _showTransactionModal(BuildContext context) {
+    final categoryBloc = context.read<CategoryBloc>();
+
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (dialogContext) => BlocProvider.value(
+        value: categoryBloc,
+        child: TransactionModalCreateWidget(
+          onSave: (Transaction transaction) {
+            context.read<TransactionBloc>().add(AddTransaction(
+                transaction,
+                DateTime(selectedDate.year, selectedDate.month, 1),
+                DateTime(selectedDate.year, selectedDate.month + 1, 0)));
+            Navigator.of(dialogContext).pop();
+          },
+        ),
+      ),
+    );
+  }
+
+  void _previousMonth(BuildContext context) {
+    setState(() {
+      selectedDate = DateTime(selectedDate.year, selectedDate.month - 1);
+      context.read<TransactionBloc>().add(LoadTransactions(
+          userId: (currentUser?.id as String?) ?? '',
+          startDate: DateTime(selectedDate.year, selectedDate.month, 1),
+          endDate: DateTime(selectedDate.year, selectedDate.month + 1, 0)));
+    });
+  }
+
+  void _nextMonth(BuildContext context) {
+    setState(() {
+      selectedDate = DateTime(selectedDate.year, selectedDate.month + 1);
+      context.read<TransactionBloc>().add(LoadTransactions(
+          userId: (currentUser?.id as String?) ?? '',
+          startDate: DateTime(selectedDate.year, selectedDate.month, 1),
+          endDate: DateTime(selectedDate.year, selectedDate.month + 1, 0)));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +93,11 @@ class TransactionView extends StatelessWidget {
         BlocProvider<TransactionBloc>(
           create: (_) => TransactionBloc(TransactionRepository(
               service: TransactionService(baseUrl: AppConstants.baseUrl)))
-            ..add(LoadTransactions()),
+            ..add(LoadTransactions(
+                userId: (currentUser?.id as String?) ?? '',
+                startDate: DateTime(selectedDate.year, selectedDate.month, 1),
+                endDate:
+                    DateTime(selectedDate.year, selectedDate.month + 1, 0))),
         ),
         BlocProvider<CategoryBloc>(
           create: (_) => CategoryBloc(CategoryRepository(
@@ -36,62 +105,13 @@ class TransactionView extends StatelessWidget {
             ..add(LoadCategories()),
         ),
       ],
-      child: TransactionViewWidget(),
-    );
-  }
-}
-
-class TransactionViewWidget extends StatefulWidget {
-  List<Transaction> transactions = [];
-  TransactionViewWidget({Key? key}) : super(key: key);
-
-  @override
-  State<TransactionViewWidget> createState() => _TransactionViewWidgetState();
-}
-
-class _TransactionViewWidgetState extends State<TransactionViewWidget> {
-  DateTime selectedDate = DateTime.now();
-  TextEditingController searchController = TextEditingController();
-  TransactionService transactionService =
-      TransactionService(baseUrl: AppConstants.baseUrl);
-
-  void _showTransactionModal() {
-    final categoryBloc = context.read<CategoryBloc>();
-
-    showDialog(
-      context: context,
-      useRootNavigator: false, // <-- clave
-
-      builder: (dialogContext) => BlocProvider.value(
-        value: categoryBloc, // reusa la instancia existente
-        child: TransactionModalCreateWidget(
-          onSave: (Transaction transaction) {
-            _addTransaction(transaction);
-            Navigator.of(dialogContext).pop();
-          },
-        ),
+      child: Builder(
+        builder: (context) => _main(context),
       ),
     );
   }
 
-  void _addTransaction(Transaction transaction) {
-    context.read<TransactionBloc>().add(AddTransaction(transaction));
-  }
-
-  void _previousMonth() {
-    setState(() {
-      selectedDate = DateTime(selectedDate.year, selectedDate.month - 1);
-    });
-  }
-
-  void _nextMonth() {
-    setState(() {
-      selectedDate = DateTime(selectedDate.year, selectedDate.month + 1);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Scaffold _main(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -101,7 +121,7 @@ class _TransactionViewWidgetState extends State<TransactionViewWidget> {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: _showTransactionModal,
+                  onPressed: () => _showTransactionModal(context),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
@@ -122,6 +142,12 @@ class _TransactionViewWidgetState extends State<TransactionViewWidget> {
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
                     ),
+                    onChanged: (value) {
+                      // Implement search functionality if needed
+                      setState(() {
+                        selectedTitleTransaction = value;
+                      });
+                    },
                   ),
                 ),
               ],
@@ -133,7 +159,7 @@ class _TransactionViewWidgetState extends State<TransactionViewWidget> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.arrow_left),
-                  onPressed: _previousMonth,
+                  onPressed: () => _previousMonth(context),
                 ),
                 GestureDetector(
                   onTap: () async {
@@ -157,7 +183,7 @@ class _TransactionViewWidgetState extends State<TransactionViewWidget> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.arrow_right),
-                  onPressed: _nextMonth,
+                  onPressed: () => _nextMonth(context),
                 ),
               ],
             ),
@@ -173,12 +199,26 @@ class _TransactionViewWidgetState extends State<TransactionViewWidget> {
                     if (transactions.isEmpty) {
                       return const Center(child: Text('No hay transacciones'));
                     }
+
+                    final filteredTransactions =
+                        selectedTitleTransaction == null ||
+                                selectedTitleTransaction!.isEmpty
+                            ? transactions
+                            : transactions
+                                .where((tx) => tx.title.toLowerCase().contains(
+                                    selectedTitleTransaction!.toLowerCase()))
+                                .toList();
+
                     return ListView.builder(
-                      itemCount: transactions.length,
+                      itemCount: filteredTransactions.length,
                       itemBuilder: (context, index) {
-                        final transaction = transactions[index];
+                        final transaction = filteredTransactions[index];
                         return TransactionCardWidget(
                           transaction: transaction as Transaction,
+                          startDate: DateTime(
+                              selectedDate.year, selectedDate.month, 1),
+                          endDate: DateTime(
+                              selectedDate.year, selectedDate.month + 1, 0),
                           deleteTransactions: (tx) {
                             context
                                 .read<TransactionBloc>()
@@ -198,5 +238,12 @@ class _TransactionViewWidgetState extends State<TransactionViewWidget> {
         ),
       ),
     );
+  }
+
+  void _loadCurrentUser() async {
+    final user = await _storage.read(key: 'user');
+    if (user != null) {
+      currentUser = User.fromJson(jsonDecode(user));
+    }
   }
 }

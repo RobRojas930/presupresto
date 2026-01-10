@@ -16,7 +16,7 @@ class _HomeViewState extends State<HomeView> {
 
   final List<Widget> _pages = [
     const DashboardView(),
-    const TransactionView(),
+    TransactionView(),
     const BudgetView(),
     const HistoryView(),
   ];

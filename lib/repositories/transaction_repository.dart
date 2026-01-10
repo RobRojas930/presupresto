@@ -11,6 +11,11 @@ class TransactionRepository {
     return _service.getTransactions(tokenOverride ?? '');
   }
 
+  Future<List<Transaction>> fetchAllByFilter(
+      {String? tokenOverride, Map<String, dynamic>? filter}) async {
+    return _service.getTransactionsByFilter(tokenOverride ?? '', filter ?? {});
+  }
+
   Future<Transaction> create(Transaction tx, {String? tokenOverride}) async {
     return _service.createTransaction({'transaction': tx});
   }

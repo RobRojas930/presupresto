@@ -28,4 +28,8 @@ class User {
       'password': password,
     };
   }
+
+  String toJsonString() {
+    return '{"id": $id, "name": "$name", "email": "$email", "password": "$password"}';
+  }
 }
