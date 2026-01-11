@@ -18,7 +18,7 @@ class TransactionService {
         Uri.parse('$baseUrl/transaction'),
         headers: {
           'Content-Type': 'application/json',
-          'authorization': 'Bearer ' + token,
+          'authorization': token,
           'Accept': 'application/json'
         },
       ).timeout(Duration(seconds: 30));
@@ -59,7 +59,7 @@ class TransactionService {
         uri,
         headers: {
           'Content-Type': 'application/json',
-          'authorization': 'Bearer ' + token,
+          'authorization': token,
           'Accept': 'application/json'
         },
       ).timeout(Duration(seconds: 30));

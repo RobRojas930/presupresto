@@ -1,25 +1,32 @@
 class Budget {
-  final int id;
+  final String id;
   final String title;
   final double initialAmount;
   final double currentAmount;
-  final int idCategory;
-
+  final double percentage;
+  final String categoryId;
+  final String color;
   Budget({
     required this.id,
     required this.title,
     required this.initialAmount,
     required this.currentAmount,
-    required this.idCategory,
+    required this.categoryId,
+    required this.percentage,
+    required this.color,
   });
 
   factory Budget.fromJson(Map<String, dynamic> json) {
     return Budget(
-      id: json['id'] as int,
+      id: json['_id'] ?? json['id'] as String,
       title: json['title'] as String,
       initialAmount: (json['initialAmount'] as num).toDouble(),
       currentAmount: (json['currentAmount'] as num).toDouble(),
-      idCategory: json['idCategory'] as int,
+      categoryId: json['categoryId'] as String,
+      percentage: json['percentage'] is int
+          ? (json['percentage'] as int).toDouble()
+          : json['percentage'] as double,
+      color: json['color'] as String,
     );
   }
 
@@ -29,7 +36,9 @@ class Budget {
       'title': title,
       'initialAmount': initialAmount,
       'currentAmount': currentAmount,
-      'idCategory': idCategory,
+      'categoryId': categoryId,
+      'percentage': percentage,
+      'color': color,
     };
   }
 }

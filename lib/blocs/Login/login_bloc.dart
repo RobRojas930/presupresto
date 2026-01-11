@@ -35,6 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final token = data['token'] as String?;
       final user = repository.parseUser(data['data']);
       if (token == null) throw Exception('Token no recibido');
+      if (user == null) throw Exception('Usuario no recibido');
       await _storage.write(key: 'token', value: token);
       await _storage.write(key: 'user', value: user!.toJsonString());
       emit(AuthAuthenticated(token: token, user: user));

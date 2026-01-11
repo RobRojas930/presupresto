@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:presupresto/models/user.dart';
 import 'package:presupresto/ui/pages/budget_view.dart';
 import 'package:presupresto/ui/pages/dashboard_view.dart';
 import 'package:presupresto/ui/pages/history_view.dart';
@@ -13,13 +17,12 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
-
-  final List<Widget> _pages = [
-    const DashboardView(),
-    TransactionView(),
-    const BudgetView(),
-    const HistoryView(),
-  ];
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  User? user;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,16 @@ class _HomeViewState extends State<HomeView> {
           ),
         ],
       ),
-      body: _pages[_selectedIndex],
+      body: FutureBuilder(
+        future: _getUser(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return _selectPage(_selectedIndex, user);
+          }
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
@@ -62,5 +74,22 @@ class _HomeViewState extends State<HomeView> {
         ],
       ),
     );
+  }
+
+  _selectPage(int index, User? user) {
+    final List<Widget> pages = [
+      DashboardView(user: user),
+      TransactionView(user: user),
+      BudgetView(user: user),
+      const HistoryView(),
+    ];
+    return pages[index];
+  }
+
+  _getUser() async {
+    final userData = await _storage.read(key: 'user');
+    if (userData != null) {
+      user = User.fromJson(jsonDecode(userData));
+    }
   }
 }

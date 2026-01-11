@@ -6,7 +6,16 @@ abstract class CategoryEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadCategories extends CategoryEvent {}
+class LoadCategories extends CategoryEvent {
+  final String userId;
+
+  LoadCategories({
+    required this.userId,
+  });
+
+  @override
+  List<Object?> get props => [userId];
+}
 
 class AddCategory extends CategoryEvent {
   final String name;

@@ -10,4 +10,13 @@ class CategoryRepository {
   Future<List<Category>> fetchAll({String? tokenOverride}) async {
     return _service.getCategories(tokenOverride ?? '');
   }
+
+  Future<List<Category>> fetchAllByFilter(
+      {String? tokenOverride, Map<String, dynamic>? filter}) async {
+    return _service.getCategoriesByFilter(tokenOverride ?? '', filter ?? {});
+  }
+
+  Future<Category> fetchById(String? tokenOverride, String id) async {
+    return _service.getCategoryById(tokenOverride ?? '', id);
+  }
 }

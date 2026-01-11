@@ -127,13 +127,14 @@ class TransactionModalCreateWidgetState
             }
             if (widget.transactionToUpdate != null) {
               widget.onUpdate!(Transaction(
-                userId: currentUser != null ? currentUser!.id.toString() : '',
+                userId: currentUser != null ? currentUser!.id : '',
                 title: titleController.text,
                 description: descriptionController.text,
                 amount: double.parse(amountController.text),
                 category: widget.categories.firstWhere(
                     (cat) => cat.id == selectedCategory,
                     orElse: () => Category(
+                        categoryId: '',
                         id: '',
                         name: '',
                         description: '',
@@ -156,6 +157,7 @@ class TransactionModalCreateWidgetState
                 category: widget.categories.firstWhere(
                     (cat) => cat.id == selectedCategory,
                     orElse: () => Category(
+                        categoryId: '',
                         id: '',
                         name: '',
                         description: '',
@@ -188,7 +190,6 @@ class TransactionModalCreateWidgetState
               (selectedCategory == null || selectedCategory!.isEmpty)) {
             final categoryId = widget.transactionToUpdate!.category.id;
             if (validIds.contains(categoryId)) {
-              // Usar addPostFrameCallback para actualizar después del build
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (mounted) {
                   setState(() {

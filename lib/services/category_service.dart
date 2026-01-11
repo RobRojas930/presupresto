@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:presupresto/models/category.dart';
@@ -20,10 +22,67 @@ class CategoryService {
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
       print(data);
-      final List<Category> categories = data.map((json) => Category.fromJson(json)).toList();
+      final List<Category> categories =
+          data.map((json) => Category.fromJson(json)).toList();
       return categories;
     } else {
       throw Exception('Failed to load categories');
+    }
+  }
+
+  Future<Category> getCategoryById(String token, String id) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/categories/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body)['data'];
+      return Category.fromJson(data);
+    } else {
+      throw Exception('Failed to load category');
+    }
+  }
+
+  Future<List<Category>> getCategoriesByFilter(
+      String token, Map<String, dynamic> filter) async {
+    try {
+      SecurityContext.defaultContext.allowLegacyUnsafeRenegotiation = true;
+
+      // Convertir el map de filtros a query parameters
+      final queryParameters =
+          filter.map((key, value) => MapEntry(key, value.toString()));
+
+      final uri = Uri.parse('$baseUrl/categories')
+          .replace(queryParameters: queryParameters);
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': token,
+          'Accept': 'application/json'
+        },
+      ).timeout(Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        final List<dynamic> jsonDataList = jsonData['data'];
+        List<Category> categories = [];
+        jsonDataList.forEach(
+          (item) {
+            categories.add(Category.fromJson(item));
+          },
+        );
+        return categories;
+      } else {
+        throw Exception('Failed to load categories');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
     }
   }
 }

@@ -25,7 +25,8 @@ import 'package:presupresto/utils/constants.dart';
 // ignore: must_be_immutable
 class TransactionView extends StatefulWidget {
   List<Transaction> transactions = [];
-  TransactionView({super.key});
+  User? user;
+  TransactionView({super.key, this.user});
 
   @override
   State<TransactionView> createState() => _TransactionViewState();
@@ -36,13 +37,10 @@ class _TransactionViewState extends State<TransactionView> {
   TextEditingController searchController = TextEditingController();
   TransactionService transactionService =
       TransactionService(baseUrl: AppConstants.baseUrl);
-  User? currentUser;
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   String? selectedTitleTransaction = '';
   @override
   void initState() {
     super.initState();
-    _loadCurrentUser();
   }
 
   void _showTransactionModal(BuildContext context) {
@@ -70,7 +68,7 @@ class _TransactionViewState extends State<TransactionView> {
     setState(() {
       selectedDate = DateTime(selectedDate.year, selectedDate.month - 1);
       context.read<TransactionBloc>().add(LoadTransactions(
-          userId: (currentUser?.id as String?) ?? '',
+          userId: widget.user?.id ?? '',
           startDate: DateTime(selectedDate.year, selectedDate.month, 1),
           endDate: DateTime(selectedDate.year, selectedDate.month + 1, 0)));
     });
@@ -80,7 +78,7 @@ class _TransactionViewState extends State<TransactionView> {
     setState(() {
       selectedDate = DateTime(selectedDate.year, selectedDate.month + 1);
       context.read<TransactionBloc>().add(LoadTransactions(
-          userId: (currentUser?.id as String?) ?? '',
+          userId: widget.user?.id ?? '',
           startDate: DateTime(selectedDate.year, selectedDate.month, 1),
           endDate: DateTime(selectedDate.year, selectedDate.month + 1, 0)));
     });
@@ -94,7 +92,7 @@ class _TransactionViewState extends State<TransactionView> {
           create: (_) => TransactionBloc(TransactionRepository(
               service: TransactionService(baseUrl: AppConstants.baseUrl)))
             ..add(LoadTransactions(
-                userId: (currentUser?.id as String?) ?? '',
+                userId: widget.user?.id ?? '',
                 startDate: DateTime(selectedDate.year, selectedDate.month, 1),
                 endDate:
                     DateTime(selectedDate.year, selectedDate.month + 1, 0))),
@@ -102,7 +100,7 @@ class _TransactionViewState extends State<TransactionView> {
         BlocProvider<CategoryBloc>(
           create: (_) => CategoryBloc(CategoryRepository(
               service: CategoryService(baseUrl: AppConstants.baseUrl)))
-            ..add(LoadCategories()),
+            ..add(LoadCategories(userId: widget.user?.id ?? '')),
         ),
       ],
       child: Builder(
@@ -238,12 +236,5 @@ class _TransactionViewState extends State<TransactionView> {
         ),
       ),
     );
-  }
-
-  void _loadCurrentUser() async {
-    final user = await _storage.read(key: 'user');
-    if (user != null) {
-      currentUser = User.fromJson(jsonDecode(user));
-    }
   }
 }

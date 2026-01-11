@@ -59,9 +59,9 @@ class MyApp extends StatelessWidget {
         AppRoutes.profile: (context) => const ProfileView(),
         AppRoutes.start: (context) => const StartView(),
         AppRoutes.home: (context) => const HomeView(),
-        AppRoutes.dashboard: (context) => const DashboardView(),
+        AppRoutes.dashboard: (context) => DashboardView(),
         AppRoutes.transacciones: (context) => TransactionView(),
-        AppRoutes.presupuestos: (context) => const BudgetView(),
+        AppRoutes.presupuestos: (context) => BudgetView(),
         AppRoutes.historico: (context) => const HistoryView(),
         AppRoutes.login: (context) =>
             const LoginView(), // TODO: Replace with LoginView
@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
             const SignupView(), // TODO: Replace with SignupView
       },
       onUnknownRoute: (settings) =>
-          MaterialPageRoute(builder: (_) => const DashboardView()),
+          MaterialPageRoute(builder: (_) => DashboardView()),
     );
   }
 }

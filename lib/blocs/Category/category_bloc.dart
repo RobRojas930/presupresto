@@ -12,10 +12,15 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     on<LoadCategories>(_onLoad);
   }
 
-  Future<void> _onLoad(LoadCategories _, Emitter<CategoryState> emit) async {
+  Future<void> _onLoad(
+      LoadCategories event, Emitter<CategoryState> emit) async {
     emit(CategoryLoading());
     try {
-      final items = await repository.fetchAll();
+      final items = await repository.fetchAllByFilter(
+        filter: {
+          'userId': event.userId,
+        },
+      );
       emit(CategoryLoaded(items));
     } catch (e) {
       emit(CategoryFailure(e.toString()));

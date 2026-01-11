@@ -1,6 +1,6 @@
 import 'package:presupresto/models/category.dart';
 
-class Transaction {
+class  Transaction {
   final String id;
   final String title;
   final String description;
