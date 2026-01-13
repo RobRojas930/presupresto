@@ -145,9 +145,7 @@ class TransactionModalCreateWidgetState
                 id: widget.transactionToUpdate != null
                     ? widget.transactionToUpdate!.id
                     : '',
-                type: widget.transactionToUpdate != null
-                    ? widget.transactionToUpdate!.type
-                    : selectedTypeTransaction!,
+                type: selectedTypeTransaction!,
               ));
             } else {
               widget.onSave?.call(Transaction(

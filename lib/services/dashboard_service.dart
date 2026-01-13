@@ -32,7 +32,7 @@ class DashBoardService {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return Dashboard.fromJson(jsonData['data']);
     } else {
-      throw Exception('Failed to load dashboard data');
+      throw Exception('No se encontró información del dashboard');
     }
   }
 }

@@ -13,8 +13,6 @@ class AuthRepository {
       service.signup(name, email, password);
 
   User? parseUser(Map<String, dynamic> data) {
-    if (data != null)
-      return User.fromJson(data as Map<String, dynamic>);
-    return null;
+    return User.fromJson(data['data'] ?? data);
   }
 }
