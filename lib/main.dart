@@ -4,7 +4,7 @@ import 'package:presupresto/blocs/Login/login_bloc.dart';
 import 'package:presupresto/blocs/Login/login_event.dart';
 import 'package:presupresto/repositories/user_repository.dart';
 import 'package:presupresto/services/auth_service.dart';
-import 'package:presupresto/ui/pages/budget_view.dart';
+import 'package:presupresto/ui/pages/budgets/budget_view.dart';
 import 'package:presupresto/ui/pages/dashboard_view.dart';
 import 'package:presupresto/ui/pages/history_view.dart';
 import 'package:presupresto/ui/pages/home_view.dart';
@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.dashboard: (context) => DashboardView(),
         AppRoutes.transacciones: (context) => TransactionView(),
         AppRoutes.presupuestos: (context) => BudgetView(),
-        AppRoutes.historico: (context) => const HistoryView(),
+        AppRoutes.historico: (context) => HistoryView(),
         AppRoutes.login: (context) =>
             const LoginView(), // TODO: Replace with LoginView
         AppRoutes.signup: (context) =>

@@ -1,4 +1,3 @@
-import 'package:presupresto/models/category.dart' show Category;
 import 'package:presupresto/models/dashboard_category.dart';
 
 class Dashboard {

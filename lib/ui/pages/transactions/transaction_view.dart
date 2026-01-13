@@ -111,6 +111,13 @@ class _TransactionViewState extends State<TransactionView> {
 
   Scaffold _main(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        onPressed: () => _showTransactionModal(context),
+        child: const Icon(Icons.add),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -118,15 +125,6 @@ class _TransactionViewState extends State<TransactionView> {
             // Top Row: Button + Search Bar
             Row(
               children: [
-                ElevatedButton(
-                  onPressed: () => _showTransactionModal(context),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    padding: const EdgeInsets.all(16),
-                  ),
-                  child: const Icon(Icons.add, size: 24),
-                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextField(

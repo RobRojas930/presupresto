@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:presupresto/models/user.dart';
-import 'package:presupresto/ui/pages/budget_view.dart';
+import 'package:presupresto/ui/pages/budgets/budget_view.dart';
 import 'package:presupresto/ui/pages/dashboard_view.dart';
 import 'package:presupresto/ui/pages/history_view.dart';
 import 'package:presupresto/ui/pages/transactions/transaction_view.dart';
@@ -81,7 +81,7 @@ class _HomeViewState extends State<HomeView> {
       DashboardView(user: user),
       TransactionView(user: user),
       BudgetView(user: user),
-      const HistoryView(),
+      HistoryView(user: user),
     ];
     return pages[index];
   }

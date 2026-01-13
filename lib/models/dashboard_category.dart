@@ -1,6 +1,6 @@
 class DashboardCategory {
   final String category;
-  final int total;
+  final double total;
   final double totalExpensesAmount;
   final double percentage;
   final String color;
@@ -20,7 +20,9 @@ class DashboardCategory {
       category: json['category'] as String,
       color: json['color'] as String,
       icon: json['icon'] as String,
-      total: json['total'] ?? 0,
+      total: json['total'] is int
+          ? (json['total'] as int).toDouble()
+          : double.parse(json['total'].toString()),
       totalExpensesAmount: double.parse(json['totalExpensesAmount'].toString()),
       percentage: double.parse(json['percentage'].toString()),
     );

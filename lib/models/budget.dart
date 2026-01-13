@@ -1,6 +1,7 @@
 class Budget {
   final String id;
   final String title;
+  final String userId;
   final double initialAmount;
   final double currentAmount;
   final double percentage;
@@ -12,6 +13,7 @@ class Budget {
     required this.initialAmount,
     required this.currentAmount,
     required this.categoryId,
+    required this.userId,
     required this.percentage,
     required this.color,
   });
@@ -23,6 +25,7 @@ class Budget {
       initialAmount: (json['initialAmount'] as num).toDouble(),
       currentAmount: (json['currentAmount'] as num).toDouble(),
       categoryId: json['categoryId'] as String,
+      userId: json['userId'] ?? '',
       percentage: json['percentage'] is int
           ? (json['percentage'] as int).toDouble()
           : json['percentage'] as double,
@@ -37,6 +40,7 @@ class Budget {
       'initialAmount': initialAmount,
       'currentAmount': currentAmount,
       'categoryId': categoryId,
+      'userId': userId,
       'percentage': percentage,
       'color': color,
     };

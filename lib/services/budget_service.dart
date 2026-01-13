@@ -82,7 +82,7 @@ class BudgetService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return json.decode(response.body);
+        return Budget.fromJson(jsonDecode(response.body)['data']);
       } else {
         throw Exception('Error al crear presupuesto: ${response.statusCode}');
       }
@@ -93,14 +93,14 @@ class BudgetService {
 
   Future<Budget?> updateBudget(String id, Budget budgetData) async {
     try {
-      final response = await http.put(
+      final response = await http.patch(
         Uri.parse('$baseUrl/budget/$id'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(budgetData),
       );
 
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        return Budget.fromJson(jsonDecode(response.body)['actualizado']);
       } else {
         throw Exception(
             'Error al actualizar presupuesto: ${response.statusCode}');
