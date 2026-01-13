@@ -16,6 +16,7 @@ class _DropdownSelectedIconState extends State<DropdownSelectedIcon> {
   Widget build(BuildContext context) {
     return DropdownButton<String>(
       hint: const Text('Selecciona un ícono'),
+      value: selectedIcon,
       items: [
         {'icon': FontAwesomeIcons.cartShopping, 'code': 'fa-shopping-cart'},
         {'icon': FontAwesomeIcons.house, 'code': 'fa-home'},
@@ -57,6 +58,7 @@ class _DropdownSelectedIconState extends State<DropdownSelectedIcon> {
           // Handle icon selection
           selectedIcon = newValue;
         });
+        widget.onIconSelected?.call(newValue!);
       },
     );
   }

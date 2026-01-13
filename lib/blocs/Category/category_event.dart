@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:presupresto/models/category.dart';
 import 'package:presupresto/models/transaction.dart';
 
 abstract class CategoryEvent extends Equatable {
@@ -18,24 +19,20 @@ class LoadCategories extends CategoryEvent {
 }
 
 class AddCategory extends CategoryEvent {
-  final String name;
-  final String description;
-  final String color;
-  final String icon;
-  AddCategory(this.name, this.description, this.color, this.icon);
+  final Category category;
+  AddCategory(this.category);
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [category];
 }
 
+class Cateogry {}
+
 class UpdateCategory extends CategoryEvent {
-  final String id;
-  final String name;
-  final String description;
-  final String color;
-  final String icon;
-  UpdateCategory(this.id, this.name, this.description, this.color, this.icon);
+  final Category category;
+
+   UpdateCategory(this.category);
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [category];
 }
 
 class DeleteCategory extends CategoryEvent {

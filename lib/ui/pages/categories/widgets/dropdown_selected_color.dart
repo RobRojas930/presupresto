@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DropdownSelectedColor extends StatefulWidget {
-  Function (MaterialColor, String)? onColorSelected;
+  Function(MaterialColor, String)? onColorSelected;
   DropdownSelectedColor({super.key, this.onColorSelected});
 
   @override
@@ -43,6 +43,8 @@ class _DropdownSelectedColorState extends State<DropdownSelectedColor> {
             setState(() {
               selectedColor = color["color"] as MaterialColor;
               selectedColorCode = color["colorcode"] as String;
+            widget.onColorSelected?.call(
+                color["color"] as MaterialColor, color["colorcode"] as String);
             });
           },
           child: Container(
@@ -52,8 +54,8 @@ class _DropdownSelectedColorState extends State<DropdownSelectedColor> {
               color: color["color"] as MaterialColor,
               shape: BoxShape.circle,
               border: Border.all(
-                color: selectedColor == color ? Colors.black : Colors.grey,
-                width: selectedColor == color ? 3 : 1,
+                color: selectedColor == color['color'] ? Colors.black : Colors.grey,
+                width: selectedColor == color['color'] ? 3 : 1,
               ),
             ),
           ),

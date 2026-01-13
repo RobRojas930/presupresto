@@ -85,4 +85,56 @@ class CategoryService {
       throw Exception('Error: $e');
     }
   }
+
+  Future<Category> createCategory(String token, Category category) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/categories'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(category.toJson()),
+    );
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body)['data'];
+      return Category.fromJson(data);
+    } else {
+      throw Exception('Failed to create category');
+    }
+  }
+
+  Future<Category> updateCategory(String token, Category category) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl/categories/${category.id}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(category.toJson()),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> data =
+          json.decode(response.body)['actualizado'];
+      return Category.fromJson(data);
+    } else {
+      throw Exception('Failed to update category');
+    }
+  }
+
+  Future<void> deleteCategory(String id) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/categories/$id'),
+        headers: {'Content-Type': 'application/json', 'authorization': ''},
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Failed to delete transaction');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 }

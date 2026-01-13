@@ -134,6 +134,7 @@ class TransactionModalCreateWidgetState
                 category: widget.categories.firstWhere(
                     (cat) => cat.id == selectedCategory,
                     orElse: () => Category(
+                        userId: '',
                         categoryId: '',
                         id: '',
                         name: '',
@@ -157,6 +158,7 @@ class TransactionModalCreateWidgetState
                 category: widget.categories.firstWhere(
                     (cat) => cat.id == selectedCategory,
                     orElse: () => Category(
+                        userId: '',
                         categoryId: '',
                         id: '',
                         name: '',

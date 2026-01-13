@@ -19,4 +19,16 @@ class CategoryRepository {
   Future<Category> fetchById(String? tokenOverride, String id) async {
     return _service.getCategoryById(tokenOverride ?? '', id);
   }
+
+  Future<Category> create(Category category, {String? tokenOverride}) async {
+    return _service.createCategory(tokenOverride ?? '', category);
+  }
+
+  Future<Category> update(Category category, {String? tokenOverride}) async {
+    return _service.updateCategory(tokenOverride ?? '', category);
+  }
+
+  Future<void> delete(String id, {String? tokenOverride}) async {
+    return _service.deleteCategory(id);
+  }
 }

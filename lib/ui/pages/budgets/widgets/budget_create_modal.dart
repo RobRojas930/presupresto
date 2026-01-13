@@ -90,6 +90,7 @@ class BudgetModalCreateWidgetState extends State<BudgetModalCreateWidget> {
                   color: widget.categories
                       .firstWhere((cat) => cat.id == selectedCategory,
                           orElse: () => Category(
+                              userId: '',
                               id: '',
                               name: '',
                               icon: '',
