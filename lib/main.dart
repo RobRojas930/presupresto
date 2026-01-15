@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:presupresto/blocs/Login/login_bloc.dart';
 import 'package:presupresto/blocs/Login/login_event.dart';
+import 'package:presupresto/blocs/Login/login_state.dart';
 import 'package:presupresto/repositories/user_repository.dart';
 import 'package:presupresto/services/auth_service.dart';
 import 'package:presupresto/ui/pages/budgets/budget_view.dart';
@@ -42,6 +43,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        String initialRoute =
+            state is AuthAuthenticated ? AppRoutes.home : AppRoutes.start;
+        return _routes(initialRoute);
+      },
+    );
+  }
+
+  _routes(String initialRoute) {
     return MaterialApp(
       title: 'Presupresto',
       theme: ThemeData(

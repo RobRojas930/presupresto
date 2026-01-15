@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presupresto/blocs/Login/login_bloc.dart';
 import 'package:presupresto/blocs/Login/login_event.dart';
 import 'package:presupresto/blocs/Login/login_state.dart';
+import 'package:presupresto/routes/app_routes.dart';
 import 'package:presupresto/utils/colors.dart';
 
 class LoginView extends StatefulWidget {
@@ -26,7 +27,7 @@ class _LoginViewState extends State<LoginView> {
           listener: (context, state) {
             if (state is AuthAuthenticated) {
               Navigator.pushNamedAndRemoveUntil(
-                  context, '/home', (route) => false);
+                  context, AppRoutes.home, (route) => false);
             }
             if (state is AuthFailure) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(

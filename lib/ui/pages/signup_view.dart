@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presupresto/blocs/Login/login_bloc.dart';
 import 'package:presupresto/blocs/Login/login_event.dart';
 import 'package:presupresto/blocs/Login/login_state.dart';
+import 'package:presupresto/routes/app_routes.dart';
 import 'package:presupresto/utils/colors.dart';
 
 class SignupView extends StatefulWidget {
@@ -27,7 +28,7 @@ class _SignupViewState extends State<SignupView> {
           listener: (context, state) {
             if (state is AuthAuthenticated) {
               Navigator.pushNamedAndRemoveUntil(
-                  context, '/dashboard', (route) => false);
+                  context, AppRoutes.dashboard, (route) => false);
             }
             if (state is AuthFailure) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(

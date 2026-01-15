@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:presupresto/models/user.dart';
+import 'package:presupresto/routes/app_routes.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -43,7 +44,8 @@ class _ProfileViewState extends State<ProfileView> {
     await _secureStorage.deleteAll();
 
     if (mounted) {
-      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(AppRoutes.start, (route) => false);
     }
   }
 

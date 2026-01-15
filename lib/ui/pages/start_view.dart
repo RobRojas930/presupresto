@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:presupresto/blocs/Login/login_bloc.dart';
+import 'package:presupresto/blocs/Login/login_state.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StartView extends StatefulWidget {
   const StartView({Key? key}) : super(key: key);
@@ -31,6 +34,31 @@ class _StartViewState extends State<StartView> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthAuthenticated) {
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        }
+      },
+      builder: (context, state) {
+        if (state is AuthLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        if (state is AuthAuthenticated) {
+          // No muestra nada, ni loader ni página
+          return Container();
+        }
+        // Si no está autenticado, muestra la página
+        return _page();
+      },
+    );
+  }
+
+  _page() {
     return Scaffold(
       body: Stack(
         children: [
