@@ -6,6 +6,7 @@ import 'package:presupresto/models/category.dart';
 import 'package:presupresto/models/user.dart';
 import 'package:presupresto/ui/pages/categories/widgets/dropdown_selected_color.dart';
 import 'package:presupresto/ui/pages/categories/widgets/dropdown_selected_icon.dart';
+import 'package:presupresto/utils/colors.dart';
 
 class CreateCategoryModal extends StatefulWidget {
   List<Category> categories = [];
@@ -21,9 +22,7 @@ class CreateCategoryModal extends StatefulWidget {
 }
 
 class CreateCategoryModalState extends State<CreateCategoryModal> {
-  late TextEditingController titleController,
-      descriptionController,
-      amountController;
+  late TextEditingController titleController, descriptionController;
 
   MaterialColor selectedColor = Colors.grey;
   String selectedColorCode = '#9E9E9E';
@@ -90,6 +89,21 @@ class CreateCategoryModalState extends State<CreateCategoryModal> {
               currentUser = User.fromJson(jsonDecode(user));
             }
             if (widget.categoryToUpdate != null) {
+              if (titleController.text.isEmpty ||
+                  descriptionController.text.isEmpty ||
+                  selectedColorCode.isEmpty ||
+                  selectedIcon == null ||
+                  selectedIcon!.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: AppColors.warning,
+                  content: Text(
+                    'Por favor, complete todos los campos obligatorios.',
+                    style: TextStyle(color: AppColors.warningText),
+                  ),
+                ));
+                return;
+              }
+
               widget.onUpdate!(Category(
                 userId: currentUser != null ? currentUser!.id : '',
                 name: titleController.text,
@@ -100,6 +114,21 @@ class CreateCategoryModalState extends State<CreateCategoryModal> {
                 categoryId: widget.categoryToUpdate!.id,
               ));
             } else {
+              if (titleController.text.isEmpty ||
+                  descriptionController.text.isEmpty ||
+                  selectedColorCode.isEmpty ||
+                  selectedIcon == null ||
+                  selectedIcon!.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: AppColors.warning,
+                  content: Text(
+                    'Por favor, complete todos los campos obligatorios.',
+                    style: TextStyle(color: AppColors.warningText),
+                  ),
+                ));
+                return;
+              }
+
               widget.onSave?.call(Category(
                 userId: currentUser != null ? currentUser!.id.toString() : '',
                 name: titleController.text,

@@ -16,6 +16,7 @@ import 'package:presupresto/repositories/category_repository.dart';
 import 'package:presupresto/services/budget_service.dart';
 import 'package:presupresto/services/category_service.dart';
 import 'package:presupresto/ui/pages/budgets/widgets/budget_create_modal.dart';
+import 'package:presupresto/utils/colors.dart';
 import 'package:presupresto/utils/constants.dart';
 
 class BudgetView extends StatefulWidget {
@@ -64,14 +65,23 @@ class _BudgetViewState extends State<BudgetView> {
   }
 
   _page(BuildContext context) {
-    return BlocBuilder<BudgetBloc, BudgetState>(
+    return BlocConsumer<BudgetBloc, BudgetState>(
+      listener: (context, state) {
+        if (state is BudgetError) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: AppColors.warning,
+            content: Text(
+              state.message.replaceAll('Exception:', ''),
+              style: const TextStyle(color: AppColors.warningText),
+            ),
+          ));
+        }
+      },
       builder: (context, state) {
         if (state is BudgetLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is BudgetLoaded) {
           return _content(state.budgets, context);
-        } else if (state is BudgetError) {
-          return Center(child: Text('Error: ${state.message}'));
         } else {
           return const Center(child: Text('Estado desconocido'));
         }
@@ -152,11 +162,21 @@ class _BudgetViewState extends State<BudgetView> {
                             return const Center(
                                 child: CircularProgressIndicator());
                           }
+
+                          Category? category;
                           if (snapshot.hasError) {
-                            return Center(
-                                child: Text('Error: ${snapshot.error}'));
+                            category = Category(
+                                userId: '',
+                                id: '',
+                                name: 'Categoria general',
+                                icon: 'fa-tags',
+                                color: '#9E9E9E',
+                                categoryId: '',
+                                description: '');
+                          } else {
+                            category = snapshot.data;
                           }
-                          final category = snapshot.data;
+                          
                           return BudgetCard(
                             id: budget.id,
                             title: budget.title,
@@ -406,7 +426,8 @@ class BudgetCard extends StatelessWidget {
                       ? budgetColor
                       : percentage > 0.8
                           ? Colors.red
-                          : Colors.transparent, // Cambia el color según el porcentaje
+                          : Colors
+                              .transparent, // Cambia el color según el porcentaje
                 ),
               ),
             ),

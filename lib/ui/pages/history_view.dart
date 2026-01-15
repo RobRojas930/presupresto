@@ -9,6 +9,7 @@ import 'package:presupresto/models/History.dart';
 import 'package:presupresto/models/user.dart';
 import 'package:presupresto/repositories/history_repository.dart';
 import 'package:presupresto/services/history_service.dart';
+import 'package:presupresto/utils/colors.dart';
 import 'package:presupresto/utils/constants.dart';
 
 // ignore: must_be_immutable
@@ -34,14 +35,23 @@ class _HistoryViewState extends State<HistoryView> {
             userId: widget.user!.id,
             startDate: DateTime(selectedDate.year, selectedDate.month, 1),
             endDate: DateTime(selectedDate.year, selectedDate.month + 1, 0))),
-      child: BlocBuilder<HistoryBloc, HistoryState>(
+      child: BlocConsumer<HistoryBloc, HistoryState>(
+        listener: (context, state) {
+          if (state is HistoryError) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: AppColors.warning,
+              content: Text(
+                state.message.replaceAll('Exception:', ''),
+                style: const TextStyle(color: AppColors.warningText),
+              ),
+            ));
+          }
+        },
         builder: (context, state) {
           if (state is HistoryLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is HistoryLoaded) {
             return _page(state.history);
-          } else if (state is HistoryError) {
-            return Center(child: Text('Error: ${state.message}'));
           } else {
             return const Center(child: Text('Iniciando...'));
           }

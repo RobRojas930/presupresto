@@ -11,6 +11,7 @@ import 'package:presupresto/models/budget.dart';
 import 'package:presupresto/models/category.dart';
 import 'package:presupresto/models/transaction.dart';
 import 'package:presupresto/models/user.dart';
+import 'package:presupresto/utils/colors.dart';
 import 'package:presupresto/utils/icon_helper.dart';
 
 class BudgetModalCreateWidget extends StatefulWidget {
@@ -82,6 +83,19 @@ class BudgetModalCreateWidgetState extends State<BudgetModalCreateWidget> {
               currentUser = User.fromJson(jsonDecode(user));
             }
             if (widget.budgetToUpdate != null) {
+              if (titleController.text.isEmpty ||
+                  initialAmountController.text.isEmpty ||
+                  selectedCategory == null ||
+                  selectedCategory!.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: AppColors.warning,
+                  content: Text(
+                    'Por favor, complete todos los campos obligatorios.',
+                    style: TextStyle(color: AppColors.warningText),
+                  ),
+                ));
+                return;
+              }
               widget.onUpdate!(Budget(
                   userId: currentUser != null ? currentUser!.id : '',
                   title: titleController.text,
@@ -102,6 +116,20 @@ class BudgetModalCreateWidgetState extends State<BudgetModalCreateWidget> {
                   currentAmount: 0.0,
                   percentage: 0.0));
             } else {
+              if (titleController.text.isEmpty ||
+                  initialAmountController.text.isEmpty ||
+                  selectedCategory == null ||
+                  selectedCategory!.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: AppColors.warning,
+                  content: Text(
+                    'Por favor, complete todos los campos obligatorios.',
+                    style: TextStyle(color: AppColors.warningText),
+                  ),
+                ));
+                return;
+              }
+
               widget.onSave?.call(Budget(
                 userId: currentUser != null ? currentUser!.id.toString() : '',
                 title: titleController.text,

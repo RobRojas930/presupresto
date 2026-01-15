@@ -82,7 +82,7 @@ class CategoryService {
         throw Exception('Failed to load categories');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      throw Exception('$e');
     }
   }
 
@@ -131,10 +131,10 @@ class CategoryService {
       );
 
       if (response.statusCode != 200 && response.statusCode != 204) {
-        throw Exception('Failed to delete transaction');
+        throw Exception('${jsonDecode(response.body)['message']}');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      throw Exception('$e');
     }
   }
 }

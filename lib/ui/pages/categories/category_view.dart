@@ -22,6 +22,7 @@ import 'package:presupresto/ui/pages/categories/widgets/category_card_widget.dar
 import 'package:presupresto/ui/pages/categories/widgets/create_category_modal.dart';
 import 'package:presupresto/ui/pages/transactions/widgets/transaction_card_widget.dart';
 import 'package:presupresto/ui/pages/transactions/widgets/transaction_modal_create_widget.dart';
+import 'package:presupresto/utils/colors.dart';
 import 'package:presupresto/utils/constants.dart';
 
 // ignore: must_be_immutable
@@ -40,15 +41,12 @@ class _CategoryViewState extends State<CategoryView> {
   TransactionService transactionService =
       TransactionService(baseUrl: AppConstants.baseUrl);
   String? selectNameCategory = '';
-
-
+  List<Category> categories = [];
 
   @override
   void initState() {
     super.initState();
   }
-
-
 
   @override
   void dispose() {
@@ -66,8 +64,8 @@ class _CategoryViewState extends State<CategoryView> {
         child: CreateCategoryModal(
           onSave: (Category? category) {
             categoryBloc.add(AddCategory(
-                  category!,
-                ));
+              category!,
+            ));
             Navigator.of(dialogContext).pop();
           },
         ),
@@ -142,12 +140,26 @@ class _CategoryViewState extends State<CategoryView> {
             const SizedBox(height: 16),
             // Transactions List
             Expanded(
-              child: BlocBuilder<CategoryBloc, CategoryState>(
+              child: BlocConsumer<CategoryBloc, CategoryState>(
+                listener: (context, state) {
+                  if (state is CategoryFailure) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: AppColors.warning,
+                      content: Text(
+                        state.message.replaceAll('Exception:', ''),
+                        style: const TextStyle(color: AppColors.warningText),
+                      ),
+                    ));
+                  }
+                },
                 builder: (context, state) {
                   if (state is CategoryLoading) {
                     return const Center(child: CircularProgressIndicator());
-                  } else if (state is CategoryLoaded) {
-                    final categories = state.props[0] as List<Category>;
+                  } else {
+                    if (state is CategoryLoaded) {
+                      categories = state.items;
+                    }
+
                     if (categories.isEmpty) {
                       return const Center(child: Text('No hay categorias'));
                     }
@@ -179,9 +191,6 @@ class _CategoryViewState extends State<CategoryView> {
                         );
                       },
                     );
-                  } else {
-                    return const Center(
-                        child: Text('No hay categorias para mostrar'));
                   }
                 },
               ),

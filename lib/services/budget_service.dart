@@ -66,7 +66,7 @@ class BudgetService {
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
-        throw Exception('Error al cargar presupuesto: ${response.statusCode}');
+        throw Exception('${jsonDecode(response.body)['message']}');
       }
     } catch (e) {
       throw Exception('Error de conexión: $e');
@@ -84,7 +84,7 @@ class BudgetService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Budget.fromJson(jsonDecode(response.body)['data']);
       } else {
-        throw Exception('Error al crear presupuesto: ${response.statusCode}');
+        throw Exception('${jsonDecode(response.body)['message']}');
       }
     } catch (e) {
       throw Exception('Error de conexión: $e');
@@ -102,8 +102,7 @@ class BudgetService {
       if (response.statusCode == 200) {
         return Budget.fromJson(jsonDecode(response.body)['actualizado']);
       } else {
-        throw Exception(
-            'Error al actualizar presupuesto: ${response.statusCode}');
+        throw Exception('${jsonDecode(response.body)['message']}');
       }
     } catch (e) {
       throw Exception('Error de conexión: $e');
@@ -118,8 +117,7 @@ class BudgetService {
       );
 
       if (response.statusCode != 200 && response.statusCode != 204) {
-        throw Exception(
-            'Error al eliminar presupuesto: ${response.statusCode}');
+        throw Exception('${jsonDecode(response.body)['message']}');
       }
     } catch (e) {
       throw Exception('Error de conexión: $e');

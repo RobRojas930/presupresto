@@ -7,6 +7,7 @@ import 'package:presupresto/models/dashboard.dart';
 import 'package:presupresto/models/user.dart';
 import 'package:presupresto/repositories/dashboard_repository.dart';
 import 'package:presupresto/services/dashboard_service.dart';
+import 'package:presupresto/utils/colors.dart';
 import 'package:presupresto/utils/constants.dart';
 
 class DashboardView extends StatefulWidget {
@@ -60,16 +61,25 @@ class _DashboardViewState extends State<DashboardView> {
   Widget _page() {
     return Scaffold(
       body: SingleChildScrollView(
-        child: BlocBuilder<DashboardBloc, DashboardState>(
+        child: BlocConsumer<DashboardBloc, DashboardState>(
+          listener: (context, state) {
+            if (state is DashboardError) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                backgroundColor: AppColors.warning,
+                content: Text(
+                  state.message.replaceAll('Exception:', ''),
+                  style: const TextStyle(color: AppColors.warningText),
+                ),
+              ));
+            }
+          },
           builder: (context, state) {
             if (state is DashboardLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is DashboardLoaded) {
               return _dashboardPage(state.dashboard);
-            } else if (state is DashboardError) {
-              return Center(child: Text('Error: ${state.message}'));
             } else {
-              return const Center(child: Text('Seleccione un mes'));
+              return const Center(child: Text('Cargando...'));
             }
           },
         ),

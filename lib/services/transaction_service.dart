@@ -39,7 +39,7 @@ class TransactionService {
         throw Exception('Failed to load transactions');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      throw Exception('$e');
     }
   }
 
@@ -79,7 +79,7 @@ class TransactionService {
         throw Exception('Failed to load transactions');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      throw Exception('$e');
     }
   }
 
@@ -102,10 +102,10 @@ class TransactionService {
         newdata['category'] = newdata['category'][0];
         return Transaction.fromJson(newdata);
       } else {
-        throw Exception('Failed to create transaction');
+        throw Exception('${jsonDecode(response.body)['message']}');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      throw Exception('$e');
     }
   }
 
@@ -132,7 +132,7 @@ class TransactionService {
         throw Exception('Failed to update transaction');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      throw Exception('$e');
     }
   }
 
@@ -151,7 +151,7 @@ class TransactionService {
         throw Exception('Failed to delete transaction');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      throw Exception('$e');
     }
   }
 }

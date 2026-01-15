@@ -10,6 +10,7 @@ import 'package:presupresto/blocs/Category/category_state.dart';
 import 'package:presupresto/models/category.dart';
 import 'package:presupresto/models/transaction.dart';
 import 'package:presupresto/models/user.dart';
+import 'package:presupresto/utils/colors.dart';
 import 'package:presupresto/utils/icon_helper.dart';
 
 class TransactionModalCreateWidget extends StatefulWidget {
@@ -126,6 +127,20 @@ class TransactionModalCreateWidgetState
               currentUser = User.fromJson(jsonDecode(user));
             }
             if (widget.transactionToUpdate != null) {
+              if (titleController.text.isEmpty ||
+                  amountController.text.isEmpty ||
+                  selectedCategory == null ||
+                  selectedCategory!.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: AppColors.warning,
+                  content: Text(
+                    'Por favor, complete todos los campos obligatorios.',
+                    style: TextStyle(color: AppColors.warningText),
+                  ),
+                ));
+                return;
+              }
+
               widget.onUpdate!(Transaction(
                 userId: currentUser != null ? currentUser!.id : '',
                 title: titleController.text,
@@ -148,6 +163,20 @@ class TransactionModalCreateWidgetState
                 type: selectedTypeTransaction!,
               ));
             } else {
+              if (titleController.text.isEmpty ||
+                  amountController.text.isEmpty ||
+                  selectedCategory == null ||
+                  selectedCategory!.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: AppColors.warning,
+                  content: Text(
+                    'Por favor, complete todos los campos obligatorios.',
+                    style: TextStyle(color: AppColors.warningText),
+                  ),
+                ));
+                return;
+              }
+
               widget.onSave?.call(Transaction(
                 userId: currentUser != null ? currentUser!.id.toString() : '',
                 title: titleController.text,

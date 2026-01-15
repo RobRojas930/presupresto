@@ -210,7 +210,7 @@ class _TransactionViewState extends State<TransactionView> {
                       itemBuilder: (context, index) {
                         final transaction = filteredTransactions[index];
                         return TransactionCardWidget(
-                          transaction: transaction as Transaction,
+                          transaction: transaction,
                           startDate: DateTime(
                               selectedDate.year, selectedDate.month, 1),
                           endDate: DateTime(

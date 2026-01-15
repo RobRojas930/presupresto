@@ -11,9 +11,10 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
-    if (resp.statusCode == 200)
+    if (resp.statusCode == 200) {
       return jsonDecode(resp.body) as Map<String, dynamic>;
-    throw Exception('Login failed: ${resp.statusCode} ${resp.body}');
+    }
+    throw Exception('${jsonDecode(resp.body)['message']}');
   }
 
   Future<Map<String, dynamic>> signup(
@@ -25,6 +26,6 @@ class AuthService {
     );
     if (resp.statusCode == 200 || resp.statusCode == 201)
       return jsonDecode(resp.body) as Map<String, dynamic>;
-    throw Exception('Signup failed: ${resp.statusCode} ${resp.body}');
+    throw Exception('${jsonDecode(resp.body)['message']}');
   }
 }
